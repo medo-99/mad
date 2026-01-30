@@ -37,9 +37,8 @@ jobs:
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # تنظيف أي ملفات تالفة ناتجة عن المحاولات السابقة
-          buildozer android clean
-          # الموافقة على التراخيص وبدء البناء الفعلي
+          # تم حذف أمر clean لأنه يتسبب في خطأ FileNotFoundError في أول بناء
+          # البدء بالبناء مباشرة مع قبول التراخيص
           yes | buildozer -v android debug
         env:
           ACCEPT_SDK_LICENSE: "yes"
