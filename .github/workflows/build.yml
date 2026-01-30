@@ -7,20 +7,66 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # استخدام نسخة مستقرة ومجربة من Ubuntu لضمان عمل الأدوات
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build with Buildozer
-        # هذا الإصدار هو الأكثر استقراراً ولا يسبب أخطاء في الوصول
-        uses: kivy/buildozer-action@v1.1.2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python_version: 3.11
+          python_version: '3.11'
+
+      - name: Install System Dependencies
+        # تثبيت كافة المكتبات التي يحتاجها Buildozer يدوياً
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            git \
+            python3-dev \
+            ffmpeg \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libportmidi-dev \
+            libswscale-dev \
+            libavformat-dev \
+            libavcodec-dev \
+            zlib1g-dev \
+            libgstreamer1.0-dev \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            libffi-dev \
+            libssl-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            zip \
+            unzip \
+            autoconf \
+            libtool \
+            pkg-config \
+            cmake \
+            openjdk-17-jdk
+
+      - name: Install Buildozer and Cython
+        run: |
+          pip install --upgrade pip
+          pip install "Cython<3.0" buildozer sh
+
+      - name: Build with Buildozer
+        run: |
+          # الموافقة التلقائية على التراخيص وبدء البناء
+          export PATH=$PATH:$HOME/.local/bin
+          yes | buildozer -v android debug
+        env:
+          ACCEPT_SDK_LICENSE: "yes"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MedicineApp-Final
+          name: MedicineApp-Release
           path: bin/*.apk
