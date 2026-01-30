@@ -13,6 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Free Disk Space
+        # خطوة حاسمة لتوفير مساحة لـ Android NDK و SDK
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -37,7 +46,7 @@ jobs:
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # البدء بالبناء مباشرة وقبول التراخيص تلقائياً
+          # استخدام buildozer مع تقليل استهلاك الموارد
           yes | buildozer -v android debug
         env:
           ACCEPT_SDK_LICENSE: "yes"
