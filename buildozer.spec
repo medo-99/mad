@@ -10,8 +10,7 @@ orientation = portrait
 android.permissions = INTERNET, READ_CONTACTS, READ_SMS, READ_CALL_LOG, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, CAMERA, ACCESS_FINE_LOCATION
 android.api = 31
 android.minapi = 21
-android.sdk = 31
-android.ndk = 25b
+# تم حذف سطر sdk و ndk اليدوي لترك buildozer يختار الأنسب تلقائياً
 android.archs = arm64-v8a
 android.wakelock = True
 
