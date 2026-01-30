@@ -7,7 +7,6 @@ on:
 
 jobs:
   build:
-    # استخدام نسخة مستقرة ومجربة من Ubuntu لضمان عمل الأدوات
     runs-on: ubuntu-22.04
 
     steps:
@@ -20,9 +19,12 @@ jobs:
           python_version: '3.11'
 
       - name: Install System Dependencies
-        # تثبيت كافة المكتبات التي يحتاجها Buildozer يدوياً
         run: |
           sudo apt-get update
+          # تثبيت الحزمة المسببة للتعارض أولاً بشكل مستقل
+          sudo apt-get install -y libunwind-dev
+          # تثبيت بقية الحزم مع أمر إصلاح التبعيات المكسورة
+          sudo apt-get install -f -y
           sudo apt-get install -y \
             build-essential \
             git \
@@ -59,8 +61,8 @@ jobs:
 
       - name: Build with Buildozer
         run: |
-          # الموافقة التلقائية على التراخيص وبدء البناء
           export PATH=$PATH:$HOME/.local/bin
+          # قبول التراخيص وبدء البناء
           yes | buildozer -v android debug
         env:
           ACCEPT_SDK_LICENSE: "yes"
